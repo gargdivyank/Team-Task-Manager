@@ -1,0 +1,68 @@
+### Team Task Manager — REST smoke tests (REST Client / VS Code extension)
+### 1. Create variables after login
+@baseUrl = http://localhost:5000/api
+@token = <paste_jwt_here>
+
+### Health (root, not under /api)
+GET http://localhost:5000/health
+
+### Sign up (adjust email to stay unique)
+POST {{baseUrl}}/auth/signup
+Content-Type: application/json
+
+{
+  "name": "Demo Member",
+  "email": "demo.member+sandbox@company.com",
+  "password": "Str0ng#Pass!"
+}
+
+### Login seed admin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@company.com",
+  "password": "Admin123!"
+}
+
+### Me
+GET {{baseUrl}}/users/me
+Authorization: Bearer {{token}}
+
+### Admin-only directory
+GET {{baseUrl}}/users
+Authorization: Bearer {{token}}
+
+### Projects collection
+GET {{baseUrl}}/projects
+Authorization: Bearer {{token}}
+
+### Create project (admin)
+POST {{baseUrl}}/projects
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "Innovation backlog",
+  "description": "Track discovery spikes",
+  "status": "Not Started",
+  "startDate": "2026-05-01",
+  "endDate": "2026-12-31"
+}
+
+### Tasks with filters + overdue shortcut
+GET {{baseUrl}}/tasks?overdue=true
+Authorization: Bearer {{token}}
+
+### Member status patch (must be assignee)
+PATCH {{baseUrl}}/tasks/TASK_OBJECT_ID/status
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "status": "Review"
+}
+
+### Dashboard aggregate
+GET {{baseUrl}}/dashboard
+Authorization: Bearer {{token}}
